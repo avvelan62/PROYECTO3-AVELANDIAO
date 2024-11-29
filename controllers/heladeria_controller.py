@@ -2,15 +2,19 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from models.ingrediente import Ingrediente
 from models.producto import Producto
 from models.heladeria import Heladeria
+from flask_login import login_required
+
 
 heladeria_blueprint = Blueprint('heladeria_bp', __name__, url_prefix="/heladeria")
 
 @heladeria_blueprint.route('/')
+@login_required
 def index():
     return render_template("index.html")
 
 
 @heladeria_blueprint.route('/ingredientes')
+@login_required
 def ingredientes():
     ingrediente_base = Ingrediente.query.filter(Ingrediente.tipo == "Base").all()
     ingrediente_complemento = Ingrediente.query.filter(Ingrediente.tipo == "Complemento").all()
@@ -24,6 +28,7 @@ def ingredientes():
 
 
 @heladeria_blueprint.route('/ingredientes/abastecer', methods=['POST'])
+@login_required
 def abastecer_ingrediente():
     ingrediente_id = request.form['ingrediente_id']
     ingrediente_abastecer = Ingrediente.query.get(ingrediente_id)
@@ -38,6 +43,7 @@ def abastecer_ingrediente():
 
 
 @heladeria_blueprint.route('/ingredientes/renovar', methods=['POST'])
+@login_required
 def renovar_inventario():
     ingrediente_id = request.form['ingrediente_id']
     ingrediente_renovar = Ingrediente.query.get(ingrediente_id)
@@ -52,6 +58,7 @@ def renovar_inventario():
 
 
 @heladeria_blueprint.route('/productos', methods=['GET', 'POST'])
+@login_required
 def productos():
     productos = Producto().query.all()
     ingredientes = Ingrediente().query.all()
@@ -81,6 +88,7 @@ def productos():
    
     
 @heladeria_blueprint.route('/productos/vender', methods=['POST'])
+@login_required
 def vender_producto():    
     productos = Producto().query.all()
     ingredientes = Ingrediente().query.all()
